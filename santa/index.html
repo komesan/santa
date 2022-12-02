@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/main.css">
+<link href="https://fonts.googleapis.com/earlyaccess/kokoro.css" rel="stylesheet">
+<title>サンタさんからの手紙 アドベントカレンダー</title>
+</head>
+
+<body>
+
+<!-- コンテンツ表示画面 -->
+
+<div class="background">
+    <div class="top_title_wrapper">
+        <div class="top_title_day popFont">
+            <p>今日は、<p class="today"></p>だよ〜！</p>
+        </div>
+        <div class="letter_wrapper">
+            <div class="letter_contents">
+                <p class="letter_title popFont">サンタさんからの<br>手紙を見てみる！</p>
+                <div class="letter_aicon">
+                    <img src="img/letter_item.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main_wrapper">
+        <div class="select_wrapper">
+            <div class="select_contents">
+                <div class="select_text">
+                    <p class="select_title popFont">サンタさんにお手紙をかきましょう！</p>
+                    <form action="">
+                        <input type="text" id="text">
+                    </form>
+                </div>
+            </div>
+            <div class="select_send">
+                <button class="popFont" id="send">サンタさんに届ける！</button>
+            </div>
+        </div>
+        <div id="output" class="scrollbar scrollbar-thumb-rounded scrollbar-thumb-pink"></div>
+
+    </div>
+</div>
+
+
+<!--/ コンテンツ表示画面 -->
+
+
+
+<!-- 以下、jquery -->
+
+<!-- JQuery firebaseの設定 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, remove,onChildRemoved } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// 関数を宣言
+let day = ""
+
+// 日付を表示
+$(function(){
+var now = new Date();
+var m = now.getMonth() + 1;
+var d = now.getDate();
+$('.today').text(m + '月' + d + '日');
+});
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCl4EMqsSHwKX5PYlUmj_2UVp4yNLcXXcc",
+    authDomain: "dev245-58925.firebaseapp.com",
+    projectId: "dev245-58925",
+    storageBucket: "dev245-58925.appspot.com",
+    messagingSenderId: "276889990744",
+    appId: "1:276889990744:web:d93bcb0677a7e7528fbc2d"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const dbRef = ref(db, 'dev245');
+
+// 送信処理を記述
+$('#send').on('click', function () {
+
+    // id="text" の場所を取得します🤗
+    const text = $('#text').val();
+    // console.log(text, 'データの取得の仕方で表示が異なるのをチェックしましょう🤗')
+
+    // 取得できているか表示の確認をしましょう！
+    // これ必須！ 表示の確認ができて方はalertをコメントアウトしておきましょう🤗
+    alert(text);
+
+
+    // データの塊を作ります🤗
+    // msg という名前で塊を作ります
+    // unameという鍵の名前
+    // textというカギの名前
+    // 作成したデータの塊をfirebaseに送信をします⇨つまりこれが保存になります🤗
+    const msg = {
+        text: text,
+    }
+
+    // firebaseに送る準備をしていることになります🤗
+    const newPostRef = push(dbRef) //データを送信できる準備
+    set(newPostRef, msg); // firebaseの登録できる場所に保存するイメージです🤗
+
+    // 送信後に入力欄を空欄にする
+    $('#text').val("");
+
+    // 場所を特定してカーソルを当てる
+    $('input:radio[name="text"]').focus();
+
+    // send送信イベント この下を消さない
+});
+
+{/* 受信処理を記述 */}
+onChildAdded(dbRef, function(data){
+const msg = data.val();
+console.log(msg, '取得したデータの塊')
+const key = data.key;
+console.log(key, 'データの塊にアクセス')
+
+// es6のテンプレートリテラル
+let h = `
+    <div class="msg">
+        <p>${msg.text}</p>
+    </div>           
+`;
+    // htmlに埋め込みましょう
+    // append();というjqueryのおまじないを使いましょう
+    $("#output").append(h);
+    // $("#output").scrollTo(0, 0);
+});
+
+</script>
+
+<!-- JQuery GoogleMapAPIの設定 -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AmwQJGVwZJT1XcSc5qZfNDvePPsqZixezVotx9Xn0ZZ0aVS4WeCSfW0tiekQDbGF' async
+  defer></script>
+<script src="js/BmapQuery.js"></script>
+<script>
+  //****************************************
+  //成功関数
+  //****************************************
+  let map;
+
+  function mapsInit(position) {
+    //lat=緯度、lon=経度 を取得
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    //Map表示
+    map = new Bmap("#myMap");
+    map.startMap(lat, lon, "load", 20); //The place is Bellevue.
+    //Pinを追加
+    let pin = map.pin(lat, lon, "#ff0000");
+    //Infoboxを追加
+    map.infobox(lat, lon, "タイトル", "詳細情報を記載");
+  };
+
+  //****************************************
+  //失敗関数
+  //****************************************
+  function mapsError(error) {
+    let e = "";
+    if (error.code == 1) { //1＝位置情報取得が許可されてない（ブラウザの設定）
+      e = "位置情報が許可されてません";
+    }
+    if (error.code == 2) { //2＝現在地を特定できない
+      e = "現在位置を特定できません";
+    }
+    if (error.code == 3) { //3＝位置情報を取得する前にタイムアウトになった場合
+      e = "位置情報を取得する前にタイムアウトになりました";
+    }
+    alert("エラー：" + e);
+  };
+
+  //****************************************
+  //オプション設定
+  //****************************************
+  const set = {
+    enableHighAccuracy: true, //より高精度な位置を求める
+    maximumAge: 20000, //最後の現在地情報取得が20秒以内であればその情報を再利用する設定
+    timeout: 10000 //10秒以内に現在地情報を取得できなければ、処理を終了
+  };
+
+
+  //最初に実行する関数
+  function GetMap() {
+    navigator.geolocation.getCurrentPosition(mapsInit, mapsError, set);
+  }
+</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

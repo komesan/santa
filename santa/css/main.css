@@ -1,0 +1,129 @@
+/* 全体 */
+.background{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 70%;
+    margin: auto;
+}
+.item{
+    width: 100px;
+    height: 125px;
+    object-fit: cover;
+    border: 0.1em solid #FADBDA;
+    box-sizing: border-box;
+}
+.popFont{
+    font-family: '昔々ふぉんと';
+}
+@keyframes poyo {
+	from, to { transform: none; }
+	10% { transform: scale(1.2); }
+	40% { transform: scale(.9); }
+	60% { transform: scale(1.04); }
+	80% { transform: scale(.98); }
+}
+@keyframes push {
+	from, to { transform: none; }
+	10% { transform: scale(.8); }
+	40% { transform: scale(1.1); }
+	60% { transform: scale(.96); }
+	80% { transform: scale(1.02); }
+}
+.scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  /* スクロールバーの形を設定する */
+  .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+    border-radius: 0.25rem;
+  }
+  /* スクロールバーの色を設定する */
+  .scrollbar-thumb-pink::-webkit-scrollbar-thumb {
+    --bg-opacity: 1;
+    background-color: #070606;
+  }
+/*  TOP */
+.top_title_wrapper{
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+.top_title_day{
+    margin-right: 20px;
+}
+.today{
+    color: #FFCCCC;
+}
+.letter_contents{
+    display: flex;
+}
+.letter_title{
+    font-size: 3rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+.letter_aicon>img{
+    height: 120px;
+    width: 200px;
+    object-fit: cover;
+}
+.letter_aicon:hover{
+    animation: poyo .6s;
+    cursor : pointer;
+}
+.letter_aicon:active{
+    animation: push .6s;
+}
+/* main */
+.main_wrapper{
+    display: flex;
+}
+.select_wrapper{
+    margin-right: 20px;
+}
+.select_text{
+    margin-bottom: 10px;
+}
+.select_title{
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+#text{
+    width: 97%;
+    height: 250px;
+}
+.select_send{
+    text-align: center;
+}
+#output {
+    background: white;
+    height: 300px;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.msg:nth-child(odd) {
+    width: 40%;
+    background: #CCFFFF;
+    margin-left: auto;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.msg:nth-child(even) {
+    width: 40%;
+    background: #FFCCCC;
+    margin-right: auto;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
